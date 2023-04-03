@@ -14,7 +14,7 @@ const StyledSlide: any = styled.div`
     top: 0;
     height: 100%;
     width: 100%;
-    background: rgb(255, 255, 255);
+    background: transparent;
     transform-style: preserve-3d;
     box-sizing: border-box;
     border-radius: 5px;

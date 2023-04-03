@@ -1,5 +1,6 @@
 export interface IStackerSliderProps {
     className?: string;
+    xDistance?: number;
     zDistance?: number;
     yDistance?: number;
     transitionDuration?: number;

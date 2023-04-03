@@ -10,6 +10,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
     public static defaultProps: Partial<IStackerSliderProps> = {
         zDistance: 50,
         yDistance: 30,
+        xDistance: 30,
         slideWidth: "350px",
         slideHeight: "350px",
         transitionDuration: 0.8,
@@ -42,8 +43,8 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
 
     public componentDidMount() {
         const countSlides = this.getCountSlides();
-        const { zDistance, yDistance } = this.props;
-
+        const { zDistance, yDistance, xDistance } = this.props;
+        let currentXDistance = 0
         let currentYDistance = 0;
         let currentZDistance = 0;
         let opacity = 1;
@@ -53,7 +54,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
         for (let i = countSlides - 1; i >= 0; i--) {
             const slideSetting: IStackerSliderSlide = {
                 transition: "none",
-                translateX: 0,
+                translateX: currentXDistance,
                 translateY: currentYDistance,
                 translateZ: currentZDistance,
                 rotateZ: 0,
@@ -64,6 +65,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
 
             slides[i] = slideSetting;
             currentYDistance += yDistance || 0;
+            currentXDistance += xDistance || 0;
             currentZDistance -= zDistance || 0;
             opacity -= stepOpacity;
         }
@@ -187,7 +189,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
         newRotZ: number,
     ) => {
         const { currentActiveSlide, countSlides } = this.state;
-        const { yDistance, zDistance } = this.props;
+        const { yDistance, zDistance, xDistance } = this.props;
 
         Object.assign(newSlides[currentActiveSlide], {
             translateX: newTransX,
@@ -201,7 +203,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
             const indexElement = this.getPrevIndexElement(j, countSlides, currentActiveSlide);
 
             Object.assign(newSlides[indexElement], {
-                translateX: newTransX / (2 * count),
+                translateX: (xDistance || 0) * count,
                 translateY: (yDistance || 0) * count,
                 translateZ: -(zDistance || 0) * count,
                 rotateZ: newRotZ / (2 * count),
@@ -218,7 +220,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
         mouseX: number,
     ) => {
         const { currentActiveSlide, countSlides } = this.state;
-        const { yDistance, zDistance } = this.props;
+        const { yDistance, zDistance, xDistance } = this.props;
         const firstSlide = newSlides.findIndex((slide: IStackerSliderSlide) => {
             return slide.id === 0;
         });
@@ -247,6 +249,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
             }
 
             Object.assign(newSlides[indexElement], {
+                translateX: (xDistance || 0) * count,
                 translateY: (yDistance || 0) * count,
                 translateZ: -(zDistance || 0) * count,
                 opacity,
@@ -325,7 +328,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
             newSlides.push(newObject);
         }
 
-        const { yDistance, zDistance, transitionDuration } = this.props;
+        const { yDistance, zDistance, xDistance, transitionDuration } = this.props;
         const timing = "0, 1.95, .49, .73";
 
         Object.assign(newSlides[currentActiveSlide], {
@@ -346,7 +349,7 @@ export class StackerSlider extends React.PureComponent<IStackerSliderProps, ISta
             const indexElement = this.getPrevIndexElement(j, countSlides, currentActiveSlide);
 
             Object.assign(newSlides[indexElement], {
-                translateX: newTranslateX,
+                translateX: (xDistance || 0) * count,
                 translateY: (yDistance || 0) * count,
                 translateZ: -(zDistance || 0) * count,
                 transition: `cubic-bezier(${timing}) 0.4s`,
